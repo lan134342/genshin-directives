@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background: url('https://www.dmoe.cc/random.php') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        input:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: linear-gradient(to right, #2575fc, #6a11cb);
+        }
+        .msg {
+            margin-top: 15px;
+            color: red;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            input, button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>注册</h1>
+        <input type="text" id="qq" placeholder="QQ号" required>
+        <input type="email" id="email" placeholder="邮箱" required>
+        <input type="text" id="uid" placeholder="玩家UID" required>
+        <input type="password" id="password" placeholder="密码" required>
+        <button onclick="register()">注册</button>
+        <div class="msg" id="msg"></div>
+    </div>
+    <script>
+        function register() {
+            const qq = document.getElementById('qq').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const uid = document.getElementById('uid').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const msgDiv = document.getElementById('msg');
+
+            fetch('register.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ qq, email, uid, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                msgDiv.textContent = data.message;
+                if (data.success) {
+                    msgDiv.style.color = 'green';
+                    setTimeout(() => window.location.href = 'login.html', 2000);
+                } else {
+                    msgDiv.style.color = 'red';
+                }
+            })
+            .catch(error => msgDiv.textContent = '注册失败，请重试！');
+        }
+    </script>
+</body>
+</html>

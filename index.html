@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原神指令平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            background: url('https://www.dmoe.cc/random.php') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #4a4a4a;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        label {
+            display: block;
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            border-color: #6a11cb;
+            box-shadow: 0 0 8px rgba(106, 17, 203, 0.4);
+        }
+        .clear-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .clear-btn:hover {
+            color: #333;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .status-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: red;
+            display: inline-block;
+        }
+        .status-indicator.logged-in {
+            background: green;
+        }
+        .status-buttons button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .status-buttons .login-btn {
+            background: #6a11cb;
+            color: #fff;
+        }
+        .status-buttons .register-btn {
+            background: #2575fc;
+            color: #fff;
+        }
+        .suggestions {
+            margin-top: 10px;
+            padding: 10px;
+            color: #333;
+            font-size: 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .suggestion-item {
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 0;
+            background: #fff;
+            transition: background 0.3s ease;
+        }
+        .suggestion-item:hover {
+            background: #eaf3ff;
+        }
+        .history {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .history .history-item {
+            color: #2575fc;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-right: 5px;
+        }
+        .history .history-item:hover {
+            color: #6a11cb;
+        }
+        .loader {
+            display: none;
+            margin: 10px auto;
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #6a11cb;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            input, .btn {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-container">
+        <div class="status-indicator" id="status-indicator"></div>
+        <div class="status-buttons">
+            <button class="login-btn" onclick="window.location.href='login.html'">登录</button>
+            <button class="register-btn" onclick="window.location.href='register.html'">注册</button>
+        </div>
+    </div>
+    <div class="container">
+        <h1>珊瑚宫|自研指令系统</h1>
+        
+        <div class="form-group">
+            <label for="uid">UID:</label>
+            <input type="text" id="uid" placeholder="请输入 UID">
+            <button class="clear-btn" onclick="document.getElementById('uid').value = '';">×</button>
+            
+        </div>
+        <div class="form-group">
+            <label for="command">指令:</label>
+            <input type="text" id="command" placeholder="请输入指令">
+            
+            <button class="clear-btn" onclick="document.getElementById('command').value = '';">×</button>
+            <div id="suggestions" class="suggestions"></div>
+        </div>
+        <button class="btn" id="execute">执行</button>
+        <div class="loader" id="loader"></div>
+        
+        <div id="output" class="output"></div>
+        <div class="history" id="history"></div>
+        
+    </div>
+    <script>
+        const commonCommands = [
+            { command: "item add 物品id 数量", description: "获取物品，如获取原石100个为item add 201 100" },
+            { command: "item add 角色id", description: "获取角色" },
+            { command: "player level 冒险等级（必须≤60）", description: "修改角色冒险等级" },
+            //做人不要当出生，每个项目的完成都是用了很长时间！所以请不要窃取他人劳动成功！！！
+            { command: "tower schedule 深渊排期（必须≤12）", description: "修改深渊排期" },
+            { command: "clear all", description: "清除账号数据【慎用，丢失不负责】" },
+            //做人不要当出生，每个项目的完成都是用了很长时间！所以请不要窃取他人劳动成功！！！
+            { command: "wudi global avatar on", description: "开启无敌模式" },
+            { command: "wudi global avatar off", description: "关闭无敌模式" },
+            { command: "stamina infinite on", description: "开启无限体力" },
+            { command: "stamina infinite off", description: "关闭无限体力" },
+            //做人不要当出生，每个项目的完成都是用了很长时间！所以请不要窃取他人劳动成功！！！//做人不要当出生，每个项目的完成都是用了很长时间！所以请不要窃取他人劳动成功！！！
+            { command: "energy infinite on", description: "开启无限能量" },
+            { command: "energy infinite off", description: "关闭无限能量" },
+            //做人不要当出生，每个项目的完成都是用了很长时间！所以请不要窃取他人劳动成功！！！
+            { command: "openstate 31 on", description: "开启祈愿" },
+            { command: "equip add 武器id 等级 突破等级 精炼等级", description: "获取武器（根据等级自动计算突破等级）" },
+        ];
+
+        const commandInput = document.getElementById("command");
+        //做人不要当出生，每个项目的完成都是用了很长时间！所以请不要窃取他人劳动成功！！！
+        const suggestionsDiv = document.getElementById("suggestions");
+        const historyDiv = document.getElementById("history");
+        const outputDiv = document.getElementById("output");
+        const loader = document.getElementById("loader");
+        const history = [];
+
+        commandInput.addEventListener("input", debounce(() => {
+            const inputText = commandInput.value.trim().toLowerCase();
+            if (inputText.length < 2) {
+
+                suggestionsDiv.style.display = "none";
+                return;
+            }
+            const filteredCommands = commonCommands.filter(cmd =>
+                cmd.command.includes(inputText) || cmd.description.includes(inputText)
+            );
+            //做人不要当出生，每个项目的完成都是用了很长时间！所以请不要窃取他人劳动成功！！！
+            displaySuggestions(filteredCommands);
+        }, 300));
+
+        function debounce(func, delay) {
+            let timeout;
+            return function () {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, arguments), delay);
+
+            }
+        }
+
+        function displaySuggestions(commands) {
+            suggestionsDiv.innerHTML = "";
+            commands.forEach(cmd => {
+                const suggestionItem = document.createElement("div");
+                suggestionItem.classList.add("suggestion-item");
+                suggestionItem.textContent = `${cmd.command} —— ${cmd.description}`;
+                suggestionItem.addEventListener("click", () => {
+                    commandInput.value = cmd.command;
+                    navigator.clipboard.writeText(cmd.command);
+                    alert("指令已复制到剪贴板！");
+                    suggestionsDiv.style.display = "none";
+                });
+                suggestionsDiv.appendChild(suggestionItem);
+            });
+            suggestionsDiv.style.display = "block";
+        }
+
+        function checkLoginStatus() {
+            fetch("check-login.php")
+                .then(res => res.json())
+                .then(data => {
+                    const statusIndicator = document.getElementById("status-indicator");
+                    if (data.loggedIn) {
+                        statusIndicator.classList.add("logged-in");
+                    } else {
+                        statusIndicator.classList.remove("logged-in");
+        
+                    }
+                });
+        }
+
+        checkLoginStatus();
+
+        document.getElementById("execute").addEventListener("click", () => {
+            const uid = document.getElementById("uid").value.trim();
+            const command = commandInput.value.trim();
+            //做人不要当出生，每个项目的完成都是用了很长时间！所以请不要窃取他人劳动成功！！！
+
+            if (!uid) {
+                outputDiv.style.display = "block";
+                outputDiv.textContent = "UID不能为空！";
+                return;
+            }
+            if (!command) {
+                outputDiv.style.display = "block";
+
+                outputDiv.textContent = "指令不能为空！";
+                return;
+            }
+
+            loader.style.display = "block";
+            outputDiv.style.display = "none";
+
+            fetch("backend.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ uid, command })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    loader.style.display = "none";
+                    outputDiv.style.display = "block";
+                    outputDiv.textContent = data.success ? `执行成功：${data.message}` : `执行失败：${data.message}`;
+                    history.push(command);
+                    updateHistory();
+    
+                });
+        });
+function updateHistory() {
+            historyDiv.innerHTML = "执行历史: ";
+            history.forEach((cmd, index) => {
+                const historyItem = document.createElement("span");
+                historyItem.classList.add("history-item");
+                historyItem.textContent = cmd;
+                historyItem.addEventListener("click", () => {
+                    commandInput.value = cmd;
+                });
+                historyDiv.appendChild(historyItem);
+            });
+        }
+    </script>
+</body>
+</html>

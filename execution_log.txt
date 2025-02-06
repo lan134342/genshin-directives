@@ -1,0 +1,6 @@
+[2025-02-06 16:45:25] IP: 117.30.143.158, UID: 89, Command: 123
+[2025-02-06 16:46:11] IP: 117.30.143.158, UID: 89, Command: item add 10002
+[2025-02-06 17:38:58] IP: 117.30.143.158, UID: 89, Command: sh ruleapi.sh start
+[2025-02-06 20:35:35] IP: 106.9.73.25, UID: 6, Command: wudi global avatar on
+[2025-02-06 20:35:45] IP: 106.9.73.25, UID: 6, Command: stamina infinite on
+[2025-02-06 20:35:53] IP: 106.9.73.25, UID: 6, Command: energy infinite on
